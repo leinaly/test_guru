@@ -2,8 +2,8 @@
 rails study project
 
 ## List of entities for Test Guru:
-*User
-*Admin
-*Test
-*Question
-*Answer
+* User
+* Admin
+* Test
+* Question
+* Answer

@@ -1,1 +1,2 @@
-
+class Test < ApplicationRecord
+end

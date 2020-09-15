@@ -4,8 +4,20 @@ class Test < ApplicationRecord
   has_and_belongs_to_many :users
   belongs_to :author, class_name: 'User'
 
-  def self.with_category(category_name)
-    Test.joins('JOIN categories ON categories.id = tests.category_id')
-        .where('categories.title = ?', category_name).order(title: :desc).pluck(:title)
+  scope :easy, -> { where(level: 0..1) }
+  scope :medium, -> { where(level: 2..4) }
+  scope :hard, -> { where(level: 5..Float::INFINITY) }
+
+  scope :with_category, -> (category_name) {
+    joins(:category).where(categories: { title: category_name })
+  }
+
+  validates :title, presence: true,
+                    uniqueness: { scope: :level }
+  validates :level, presence: true,
+                    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  def self.with_category_titles(cat_name)
+    with_category(cat_name).order(title: :desc).pluck(:title)
   end
 end

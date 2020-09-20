@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   #resources :answers
 
   resources :tests do
-    resources :questions
+    resources :questions, shallow: true
   end
   #resources :categories
   #resources :users

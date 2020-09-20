@@ -4,7 +4,7 @@ class TestsController < ApplicationController
   def index
     ts = Test.all
 
-    render json: { questions: ts }
+    render json: { tests: ts }
   end
 
 

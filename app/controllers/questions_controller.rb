@@ -1,32 +1,31 @@
 class QuestionsController < ApplicationController
 
-  before_action :init_ex
-  before_action :find_test, only: %i[index]
+  before_action :find_test, only: %i[index show create]
   rescue_from ActiveRecord::RecordNotFound, with: :rescue_with_test_not_found
 
   #Просмотра списка вопросов теста
   def index
-    @qs = @test.questions
-
+    @questions = @test.questions
   end
 
   #Просмотра конкретного вопроса теста
   def show
-    @q = Question.find_by(test_id: params[:test_id], id: params[:id])
+    @question = Question.find_by(id: params[:id])
 
-    render json: { questions: @q }
+    render json: { questions: @question }
   end
 
   #Создания вопроса. Используйте шаблон с HTML формой.
   # Идентификатор теста к которому принадлежит вопрос можно указать явно в составе URL значения атрибута action в тэге form
   def create
-    Question.create!(question_params)
+    msg = "Created!"
+    begin
+      Question.create!(question_params)
+    rescue ActiveRecord::RecordInvalid => ex
+      msg = "Not created! Smth goes wrong."
+    end
 
-   render json: { result: "Created!" }
-  end
-
-  def new
-
+   render json: { result: msg }
   end
 
   #Удаление вопроса
@@ -36,25 +35,17 @@ class QuestionsController < ApplicationController
     render json: { result: "Deleted!"}
   end
 
-
   private
 
   def question_params
-    params.require(:question).permit(:body, :test_id)
+    params.require(:question).permit(:body).merge(test_id: @test.id)
   end
 
   def find_test
-    @test = Test.find(params[:test_id])
-  end
-
-  def init_ex
-    @ex = []
+    @test = Test.find(params[:test_id]) if params[:test_id].present?
   end
 
   def rescue_with_test_not_found
-    @ex << "Test was not found"
-    render template: "questions/index"
+    render plain: 'Question was not found'
   end
-
-
 end

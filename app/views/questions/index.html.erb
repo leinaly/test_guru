@@ -1,0 +1,35 @@
+<h1>Show Questions</h1>
+
+<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+
+<% if @ex.present? %>
+  <% @ex.each_with_index do |exception, index| %>
+    <input type="text" name="exception_<%= index %>" id="exception_<%= index %>" value="<%= exception %> " disabled>
+    <br>
+  <% end %>
+<% else %>
+  <% @qs.each do |question| %>
+    <p>
+      <label for="question-body">Body:</label>
+      <input type="text" name="question[body]" id="question-body" value="<%= question.body %> " disabled>
+    </p><br>
+
+    <p>
+      <label for="test-id">Test Id:</label>
+      <input type="text" name="question[test_id]" id="test-id" value="<%= question.test_id %>" disabled>
+    </p><br>
+
+    <p>
+      <%= link_to "Delete", test_question_path(id: question.id), data: { method: :delete } %>
+    </p><br>
+
+  <% end %>
+  <%= link_to "Create question", new_test_question_path %>
+<% end %>
+
+
+
+
+
+
+

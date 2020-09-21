@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
 
-  before_action :find_test, only: %i[index show create]
+  before_action :find_question, only: %i[show destroy]
+  before_action :find_test, only: %i[index create]
   rescue_from ActiveRecord::RecordNotFound, with: :rescue_with_test_not_found
 
   #Просмотра списка вопросов теста
@@ -10,27 +11,23 @@ class QuestionsController < ApplicationController
 
   #Просмотра конкретного вопроса теста
   def show
-    @question = Question.find_by(id: params[:id])
-
-    render json: { questions: @question }
+    render json: { question: @question }
   end
 
   #Создания вопроса. Используйте шаблон с HTML формой.
   # Идентификатор теста к которому принадлежит вопрос можно указать явно в составе URL значения атрибута action в тэге form
   def create
-    msg = "Created!"
-    begin
-      Question.create!(question_params)
-    rescue ActiveRecord::RecordInvalid => ex
-      msg = "Not created! Smth goes wrong."
+    @question = @test.questions.new(question_params)
+    if @question.save
+      render json: { result: "Created!" }
+    else
+      render json: { result: "Smth was wrong!" }
     end
-
-   render json: { result: msg }
   end
 
   #Удаление вопроса
   def destroy
-    Question.destroy(params[:id])
+    @question.destroy
 
     render json: { result: "Deleted!"}
   end
@@ -38,11 +35,15 @@ class QuestionsController < ApplicationController
   private
 
   def question_params
-    params.require(:question).permit(:body).merge(test_id: @test.id)
+    params.require(:question).permit(:body)
   end
 
   def find_test
-    @test = Test.find(params[:test_id]) if params[:test_id].present?
+    @test = Test.find(params[:test_id])
+  end
+
+  def find_question
+    @question = Question.find(params[:id])
   end
 
   def rescue_with_test_not_found

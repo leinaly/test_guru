@@ -19,10 +19,6 @@ class Test < ApplicationRecord
   validates :level, presence: true,
                     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  scope :easy, -> { where(level: 0..1) }
-  scope :intermediate, -> { where(level: 2..4) }
-  scope :hard, -> { where(level: 5..Float::INFINITY) }
-
   def self.with_category_titles(cat_name)
     with_category(cat_name).order(title: :desc).pluck(:title)
   end

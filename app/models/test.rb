@@ -4,9 +4,11 @@ class Test < ApplicationRecord
   has_and_belongs_to_many :users
   belongs_to :author, class_name: 'User'
 
-  scope :easy, -> { where(level: 0..1) }
-  scope :medium, -> { where(level: 2..4) }
-  scope :hard, -> { where(level: 5..Float::INFINITY) }
+  scope :easy, -> { where(level: 0) }
+  scope :elementary, -> { where(level: 1) }
+  scope :advanced, -> { where(level: 2) }
+  scope :hard, -> { where(level: 3) }
+  scope :hero, -> { where(level: 4..Float::INFINITY) }
 
   scope :with_category, -> (category_name) {
     joins(:category).where(categories: { title: category_name })

@@ -1,19 +1,20 @@
 <h1>Show Questions</h1>
-<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-  <% @questions.each do |question| %>
-    <p>
-      <label for="question-body">Body:</label>
-      <input type="text" name="question[body]" id="question-body" value="<%= question.body %> " disabled>
-    </p><br>
-    <p>
-      <label for="test-id">Test Id:</label>
-      <input type="text" name="question[test_id]" id="test-id" value="<%= question.test_id %>" disabled>
-    </p><br>
-    <p>
-      <%= link_to "Delete", question_path(id: question.id), data: { method: :delete } %>
-    </p><br>
-  <% end %>
-  <%= link_to "Create question", new_test_question_path %>
+
+<p>
+  <%= link_to 'New question', new_test_question_path(@test) %>
+</p>
+
+<table>
+  <tr>
+    <th>Body</th>
+    <th>Test Id</th>
+    <th>Answers count</th>
+    <th colspan="3">Actions</th>
+  </tr>
+
+  <%= render @questions %>
+</table>
+
 
 
 

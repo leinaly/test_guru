@@ -1,35 +1,44 @@
 class QuestionsController < ApplicationController
 
-  before_action :find_question, only: %i[show destroy]
-  before_action :find_test, only: %i[index create]
-  rescue_from ActiveRecord::RecordNotFound, with: :rescue_with_test_not_found
+  before_action :find_question, only: %i[show destroy edit update]
+  before_action :find_test, only: %i[index create new]
+  rescue_from ActiveRecord::RecordNotFound, with: :rescue_with_question_not_found
 
-  #Просмотра списка вопросов теста
   def index
     @questions = @test.questions
   end
 
-  #Просмотра конкретного вопроса теста
   def show
-    render json: { question: @question }
   end
 
-  #Создания вопроса. Используйте шаблон с HTML формой.
-  # Идентификатор теста к которому принадлежит вопрос можно указать явно в составе URL значения атрибута action в тэге form
+  def new
+    @question = @test.questions.new
+  end
+
   def create
     @question = @test.questions.new(question_params)
     if @question.save
-      render json: { result: "Created!" }
+      redirect_to @test
     else
-      render json: { result: "Smth was wrong!" }
+      render :new
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if @question.update(question_params)
+      redirect_to @question
+    else
+      render :edit
     end
   end
 
   #Удаление вопроса
   def destroy
     @question.destroy
-
-    render json: { result: "Deleted!"}
+    redirect_to test_questions_path
   end
 
   private
@@ -46,7 +55,7 @@ class QuestionsController < ApplicationController
     @question = Question.find(params[:id])
   end
 
-  def rescue_with_test_not_found
+  def rescue_with_question_not_found
     render plain: 'Question was not found'
   end
 end

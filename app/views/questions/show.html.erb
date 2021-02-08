@@ -1,4 +1,13 @@
 <h1><%= @question.body %></h1>
+
+<h2>Answers</h2>
+
+<%= link_to 'New answer', new_question_answer_path(@question)  %>
+
+<ol>
+  <%= render @question.answers %>
+</ol>
+
 <% @question.answers.each do |answer| %>
   <p><%= answer.body %></p>
   <p>Correct: <%= answer.correct %></p>

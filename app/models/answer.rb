@@ -10,6 +10,6 @@ class Answer < ApplicationRecord
   private
 
   def validate_answers_amount
-    #errors.add(:question) if self.question.answers.count >= 4
+    errors.add(:question) if self.question.answers.count >= 4
   end
 end

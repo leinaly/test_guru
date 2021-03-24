@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_user_params, if: :devise_controller?
 
   def after_sign_in_path_for(resource)
-    resource.is_a?(Admin) ? admin_root_path : root_path
+    resource.admin? ? admin_root_path : root_path
   end
 
   def configure_user_params
